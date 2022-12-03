@@ -7,7 +7,7 @@ import jwt from "jsonwebtoken";
 export const login = async (req,res,next) =>{
     const name = req.body.username;
     try{
-        const user = await Login.findOne({username:name});
+        const user = await Login.findOne({username:name}); //audenticating username
         if(!user) return next(createError(404,"User not found"));
         
         const ispasswordCorrect = await bcrypt.compare(req.body.password, user.password);
