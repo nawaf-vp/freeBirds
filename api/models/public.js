@@ -4,34 +4,39 @@ const publicSchema = new mongoose.Schema({
     name:{
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        trim:true
+
     },
     password:{
         type: String,
         required: true,
-        Select:false,
     },
     district:{
         type: String,
         required: true,
+        trim:true
     },   
     state:{
         type: String,
         required: true,
+        trim:true
     },
     email:{
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        trim:true
     },
     gender:{
         type: String,
-        required: true,
+        // required: true,
     },
-    phoneno:{
+    phone:{
         type: Number,
         required: true,
-        unique: true
+        unique: true,
+        trim:true
     },
 },
 {timestamps:true}

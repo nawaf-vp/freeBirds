@@ -1,32 +1,36 @@
-import jwt from "jsonwebtoken";
 import { createError } from "../utils/error.js";
+import { decrypts } from "./cryto.js";
+
+
 
 // verify token
-export const verifyToken = (req,res,next) => {
+export const verifyToken = async (req,res,next) => {
     const token = req.cookies.access_token;
+    // console.log(token)
     if(!token){
-        return next(createError(404,"You are not autherized!"))
+        return next(createError(404,"You are not autherized!"));
     }
-    jwt.verify(token,process.env.JWT,(err,user)=>{
-        if(err) return next(createError(403,"Token not valid!"))
-        req.user = user;
-        next()
-    })
+        const user = await decrypts(token)
+            if(!user) return next(createError(403, "Token is not valid!"));
+            req.user = user;
+            next();
 }
 
 // verify Admin
-export const verifyAdmin = (req,res,next) =>{
-    verifyToken(req,res,()=>{
+export const verifyAdmin = async (req,res,next) =>{
+    await verifyToken(req,res,next,()=>{
         if(req.user.type.isAdmin){
             next()
-        }else
+        }else {
         return next(createError(403,"You are not autherized!"))
+        }
     })
 }
 
 // verify Organisation for updation
 export const verifyOrgWithId = (req,res,next) =>{
-    verifyToken(req,res,()=>{
+    verifyToken(req,res,next,()=>{
+        console.log("verifying")
         if(req.user.type.isOrg && req.user.id === req.params.id || req.user.type.isAdmin){
             next()
         }else
@@ -35,8 +39,8 @@ export const verifyOrgWithId = (req,res,next) =>{
 }
 // verify Organisation
 export const verifyOrg = (req,res,next) =>{
-    verifyToken(req,res,()=>{
-        if(req.user.type.isOrg || req.user.type.isAdmin){
+    verifyToken(req,res,next,()=>{
+        if(user.type.isOrg || user.type.isAdmin){
             next()
         }else
         return next(createError(403,"You are not autherized!"))
@@ -45,17 +49,27 @@ export const verifyOrg = (req,res,next) =>{
 
 // verify User with id
 export const verifyUserWithId = (req,res,next) =>{
-    verifyToken(req,res,()=>{
-        if(req.user.type.isUser && req.user.id === req.params.id || req.user.type.isAdmin){
+    verifyToken(req,res,next,()=>{
+        if(user.type.isUser && user.id === req.params.id || user.type.isAdmin){
             next()
         }else
         return next(createError(403,"You are not autherized!"))
     })
 }
 // verify User
-export const verifyUser = (req,res,next) =>{
-    verifyToken(req,res,()=>{
-        if(req.user.type.isUser && req.user.id === req.params.id || req.user.type.isAdmin){
+export const verifyUser = async (req,res,next) =>{
+    const user = await verifyToken(req,res,next,()=>{
+        if(user.type.isUser || user.type.isAdmin){
+            next()
+        }else return next(createError(403,"You are not autherized!"))
+    })
+}
+
+// verify user and org with id
+export const verifyUserOrgWithId = (req,res,next) =>{
+    verifyToken(req,res,next,()=>{
+        // console.log("verifying token")   
+        if(user.type.isUser && user.id === req.params.id || req.user.type.isOrg && req.user.id === req.params.id || user.type.isAdmin){
             next()
         }else
         return next(createError(403,"You are not autherized!"))

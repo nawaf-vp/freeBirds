@@ -3,7 +3,15 @@ import mongoose from "mongoose";
 const loginSchema = mongoose.Schema({
     username:{
         type: String,
-        required: true
+        required: true,
+        unique: true,
+        trim:true
+    },
+    email:{
+        type: String,
+        required: true,
+        unique: true,
+        trim:true
     },
     password:{
         type: String,

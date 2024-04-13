@@ -4,31 +4,35 @@ const orgSchema = new mongoose.Schema({
     name:{
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        trim:true
     },
     password:{
         type: String,
         required: true,
-        select:false,
     },
     state:{
         type: String,
         required: true,
+        trim:true
     },
     district:{
         type: String,
         required: true,
+        trim:true
     },
     email:{
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        trim:true
     },
-    phoneno:{
+    phone:{
         type: Number,
         required: true,
         unique: true,
-        min:10,
+        min:7,
+        // max:10,
     },
 },
 {timestamps:true}

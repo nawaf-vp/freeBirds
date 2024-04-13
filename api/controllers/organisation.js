@@ -9,24 +9,25 @@ export const registerOrg = async (req,res,next) =>{
     const hash = bcrypt.hashSync(req.body.password,salt);
     try{
         const org = new Organisation({
-            name:req.body.name,
+            ...req.body,
             password:hash,
-            state:req.body.state,
-            district:req.body.district,
-            email:req.body.email,
-            phoneno:req.body.phoneno,
         })
+        console.log(org)
+        console.log("saving org")
         await org.save()
+        console.log("org saved")
         const {password,...others} = org._doc;
         res.status(200).json(others)
         try{
             const orgLogin = new Login({
             _id:org._id,
+            email:req.body.email,
             username:req.body.name,
             password:hash,
             type:{isOrg:true}
             })    
             await orgLogin.save() 
+            console.log("organisation registered")
         }catch(err){
             next(createError(404,"failed to create Organisation."))
         }
@@ -42,11 +43,7 @@ export const updateOrg = async (req,res,next) => {
     try{
         const UpdateOrg = await Organisation.findByIdAndUpdate(req.params.id,
             {$set:{
-                name:req.body.name,
-                state:req.body.state,
-                district:req.body.district,
-                email:req.body.email,
-                phoneno:req.body.phoneno,
+                ...req.body,
                 password:hash
             }},{new:true})
             const {password,...others} = UpdateOrg._doc;
@@ -100,6 +97,6 @@ export const getAllOrgs = async (req,res,next) => {
         // })
         res.status(200).json(orgs)
     }catch(err){
-        next(createError(400,"Organisations not found."))
+        next(createError(400,"Something went wrong while fetching Organisations"))
     }
 };

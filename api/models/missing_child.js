@@ -1,55 +1,61 @@
 import mongoose from "mongoose";
 
 const misschildSchema = new mongoose.Schema({
-    o_id:{
+    u_id:{
+        type: String,
+        required: true
+    },
+    aws_face_id:{
         type: String,
         required: true,
     },
     name:{
         type: String,
         required: true,
-    },
-    location:{
-        type: String,
-        required: true,
-    },
-    email:{
-        type: String,
-        required: true,
-    },
-    gender:{
-        type: String,
-        required: true,
+        trim:true
     },
     phoneno:{
         type: Number,
         required: true,
+        trim:true
     },
-    image:{
-        type: [String],
+    userEmail:{
+        type: String,
+        required: true,
+        trim:true
+    },
+    state:{
+        type: String,
+        required: true,
+        trim:true
+    },
+    city:{
+        type: String,
+        required: true,
+        trim:true
+    },
+    photo:{
+        type: String,
         required: true,
     },
-    height:{
-        type: Number,
+    appearance:{
+        type: String,
+    },
+    gender:{
+        type: String,
     },
     age:{
         type: Number,
     },
-    color:{
-        type: String,
-    },
-    dress:{
-        type: String,
-    },
     date:{
         type: Date,
-        required: true,
+        // required: true,
     },
     status:{
         type: Boolean,
         default:false,
     },
 },
-{timestamps:true}
+{timestamps:true},
 );
 export default mongoose.model("MissingChild",misschildSchema);
